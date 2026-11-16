@@ -15,11 +15,13 @@
 
     <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100">
         
-        <!-- Header / Custom Logo Section -->
+        <!-- Header / Logo Section -->
         <div class="bg-gradient-to-r from-emerald-700 to-teal-800 text-white p-6 text-center relative">
-            <div class="w-24 h-24 mx-auto mb-4 bg-white rounded-full flex items-center justify-center p-2 shadow-md overflow-hidden">
-                <!-- Gantikan 'logo.png' dengan nama fail logo anda di GitHub -->
-                <img src="logo.png" alt="Logo Surau Taman Pandan Mewah" class="w-full h-full object-contain">
+            <div class="w-20 h-20 mx-auto mb-4 bg-white/10 rounded-full flex items-center justify-center border-2 border-white/20 shadow-inner">
+                <!-- Surau / Mosque SVG Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-emerald-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
             </div>
             <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Sumbangan Tahlil</h1>
             <p class="text-emerald-200 text-sm font-medium mt-1">Surau Taman Pandan Mewah</p>
@@ -48,12 +50,13 @@
                 <p class="text-xs text-slate-500 mb-3">Masukkan nama arwah yang ingin ditahlilkan (isi mengikut keperluan):</p>
                 
                 <div class="space-y-2.5" id="arwahContainer">
+                    <!-- Loop 1 to 10 -->
                     <script>
                         for (let i = 1; i <= 10; i++) {
                             document.write(`
                                 <div class="flex items-center space-x-2">
                                     <span class="text-xs font-medium text-slate-400 w-6 text-right">${i}.</span>
-                                    <input type="text" id="arwah${i}" placeholder="Nama Arwah ${i} ${i === 1 ? '(Wajib)' : '(Jika ada)'}" 
+                                    <input type="text" id="arwah${i}" placeholder="Nama Arwah ${i} ${i <= 2 ? '(Wajib)' : '(Jika ada)'}" 
                                         class="w-full px-3.5 py-2 rounded-lg border border-slate-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition text-sm">
                                 </div>
                             `);
@@ -101,7 +104,8 @@
         function submitToWhatsApp(event) {
             event.preventDefault();
 
-            const phoneSurau = "60126560299"; 
+            // Ganti nombor telefon surau di bawah (Format antarabangsa tanpa tanda +, contoh: 60123456789)
+            const phoneSurau = "60123456789"; 
 
             const namaPemohon = document.getElementById('namaPemohon').value;
             const noTelefon = document.getElementById('noTelefon').value;
@@ -130,7 +134,7 @@
             message += `*Sumbangan Tahlil:* RM ${sumbangan}%0A%0A`;
             message += `_Jazakumullahu khairan kathira. Terima kasih atas segala kebaikan._`;
 
-            const whatsappURL = `https://wa.me/${phoneSurau}?text=${message}`;
+            const whatsappURL = `https://wa.me/60126560299?text=${message}`;
             window.open(whatsappURL, '_blank');
         }
     </script>
