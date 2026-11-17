@@ -64,13 +64,49 @@
                 </div>
             </div>
 
-            <!-- Pendaftaran Tahlil -->
+            <!-- Jenis Sumbangan -->
             <div>
-                <label for="sumbangan" class="block text-sm font-semibold text-slate-700 mb-1">Sumbangan Tahlil (RM) <span class="text-red-500">*</span></label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500 font-medium text-sm">RM</span>
-                    <input type="number" id="sumbangan" required min="1" step="any" placeholder="0.00" 
-                        class="w-full pl-12 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition text-sm">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Jenis Sumbangan <span class="text-red-500">*</span></label>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <label class="flex items-center space-x-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-emerald-50 transition">
+                        <input type="radio" name="jenisSumbangan" value="Kewangan" id="sumbanganKewangan" checked onchange="toggleSumbanganType()" class="text-emerald-600 focus:ring-emerald-500">
+                        <span class="text-sm font-medium text-slate-700">Sumbangan Kewangan</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 border border-slate-200 rounded-lg cursor-pointer hover:bg-emerald-50 transition">
+                        <input type="radio" name="jenisSumbangan" value="Makanan" id="sumbanganMakanan" onchange="toggleSumbanganType()" class="text-emerald-600 focus:ring-emerald-500">
+                        <span class="text-sm font-medium text-slate-700">Sumbangan Makanan</span>
+                    </label>
+                </div>
+
+                <!-- Sumbangan Kewangan Section -->
+                <div id="kewanganSection" class="space-y-3">
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-3.5 rounded-r-lg text-blue-800 text-xs sm:text-sm">
+                        <p class="font-semibold mb-0.5">Maklumat Akaun Surau:</p>
+                        <p>Bank: <span class="font-bold">Maybank</span></p>
+                        <p>No. Akaun: <span class="font-bold text-base tracking-wide">5622 4551 4498</span></p>
+                        <p class="text-xs text-blue-600 mt-1">*Sila sertakan resit pindahan wang (transfer slip) semasa menghantar borang.</p>
+                    </div>
+                    <div>
+                        <label for="sumbangan" class="block text-sm font-semibold text-slate-700 mb-1">Jumlah Sumbangan (RM)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500 font-medium text-sm">RM</span>
+                            <input type="number" id="sumbangan" min="1" step="any" placeholder="0.00" required
+                                class="w-full pl-12 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sumbangan Makanan Section -->
+                <div id="makananSection" class="hidden space-y-3">
+                    <div class="bg-emerald-50 border-l-4 border-emerald-400 p-3.5 rounded-r-lg text-emerald-800 text-xs sm:text-sm">
+                        <p class="font-semibold mb-0.5">Maklumat Sumbangan Makanan:</p>
+                        <p>Sila nyatakan butiran makanan yang ingin disumbangkan untuk memudahkan urusan pihak surau.</p>
+                    </div>
+                    <div>
+                        <label for="detailMakanan" class="block text-sm font-semibold text-slate-700 mb-1">Butiran Makanan</label>
+                        <input type="text" id="detailMakanan" placeholder="Contoh: Kuih muih / Nasi bungkus (10 pax)" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition text-sm">
+                    </div>
                 </div>
             </div>
 
@@ -98,8 +134,29 @@
 
     </div>
 
-    <!-- Script to handle WhatsApp submission -->
+    <!-- Script to handle dynamic fields & WhatsApp submission -->
     <script>
+        function toggleSumbanganType() {
+            const isKewangan = document.getElementById('sumbanganKewangan').checked;
+            const kewanganSection = document.getElementById('kewanganSection');
+            const makananSection = document.getElementById('makananSection');
+            const sumbanganInput = document.getElementById('sumbangan');
+            const detailMakananInput = document.getElementById('detailMakanan');
+            
+            if (isKewangan) {
+                kewanganSection.classList.remove('hidden');
+                makananSection.classList.add('hidden');
+                sumbanganInput.setAttribute('required', 'required');
+                detailMakananInput.removeAttribute('required');
+                detailMakananInput.value = '';
+            } else {
+                kewanganSection.classList.add('hidden');
+                makananSection.classList.remove('hidden');
+                sumbanganInput.removeAttribute('required');
+                sumbanganInput.value = '';
+            }
+        }
+
         function submitToWhatsApp(event) {
             event.preventDefault();
 
@@ -107,7 +164,16 @@
 
             const namaPemohon = document.getElementById('namaPemohon').value.trim();
             const noTelefon = document.getElementById('noTelefon').value.trim();
-            const sumbangan = document.getElementById('sumbangan').value;
+            const jenisSumbangan = document.querySelector('input[name="jenisSumbangan"]:checked').value;
+
+            let sumbanganInfo = "";
+            if (jenisSumbangan === "Kewangan") {
+                const sumbangan = document.getElementById('sumbangan').value.trim();
+                sumbanganInfo = `Kewangan (RM ${sumbangan})`;
+            } else {
+                const detailMakanan = document.getElementById('detailMakanan').value.trim();
+                sumbanganInfo = `Makanan ${detailMakanan ? '(' + detailMakanan + ')' : ''}`;
+            }
 
             let arwahList = "";
             let count = 1;
@@ -129,8 +195,11 @@
             message += `*Hajat Daripada:* ${namaPemohon}%0A`;
             message += `*No. Telefon:* ${noTelefon}%0A%0A`;
             message += `*Senarai Nama Arwah:*%0A${arwahList}%0A`;
-            message += `*Sumbangan Tahlil:* RM ${sumbangan}%0A%0A`;
-            message += `_Jazakumullahu khairan kathira. Terima kasih atas segala kebaikan._`;
+            message += `*Jenis Sumbangan:* ${sumbanganInfo}%0A`;
+            if (jenisSumbangan === "Kewangan") {
+                message += `*Info Pembayaran:* Maybank (5622 4551 4498)%0A`;
+            }
+            message += `%0A_Jazakumullahu khairan kathira. Terima kasih atas segala kebaikan._`;
 
             const whatsappURL = `https://wa.me/${phoneSurau}?text=${message}`;
             window.open(whatsappURL, '_blank');
